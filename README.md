@@ -1,8 +1,8 @@
-# Good First Issue - Learn Open Source Contributions 🚀
+# Good First Issue - Learn Open Source Contributions 
 
 Welcome to the **Good First Issue** repository! This is a beginner-friendly project designed to help new developers learn how to contribute to open source projects by making their first contribution.
 
-## 📝 About This Project
+## About This Project
 
 This project aims to provide a safe and welcoming environment for beginners to learn the basics of open source contributions. By adding your name to our contributors list, you'll learn how to:
 
