@@ -1,0 +1,59 @@
+name: Validate Contributor Entry
+
+on:
+  pull_request:
+    paths:
+      - 'README.md'
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Validate contributor format
+        run: |
+          echo "Checking if contributor entry follows the correct format..."
+          
+          # Get the diff of README.md
+          git diff origin/main HEAD -- README.md > diff.txt
+          
+          # Check if the addition follows the pattern: - [Name](https://github.com/username)
+          if grep -q "^+.*\- \[.*\](https://github.com/.*)" diff.txt; then
+            echo "✅ Format looks good!"
+            exit 0
+          else
+            echo "⚠️  Warning: Make sure your entry follows this format:"
+            echo "- [Your Name](https://github.com/YOUR-USERNAME)"
+            echo ""
+            echo "Example:"
+            echo "- [John Doe](https://github.com/johndoe)"
+            exit 0  # We don't want to fail the check, just warn
+          fi
+
+      - name: Comment on PR
+        if: failure()
+        uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `⚠️ **Formatting Notice**
+              
+              Your contributor entry might not be in the correct format. Please make sure it looks like this:
+              
+              \`\`\`markdown
+              - [Your Name](https://github.com/YOUR-USERNAME)
+              \`\`\`
+              
+              **Example:**
+              \`\`\`markdown
+              - [John Doe](https://github.com/johndoe)
+              \`\`\`
+              
+              Don't worry - a maintainer will help you fix this if needed! 😊`
+            })
